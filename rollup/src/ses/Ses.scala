@@ -5,9 +5,9 @@ import reddit.model.Post
 
 import cats.effect.IO
 import software.amazon.awssdk.services.ses.model._
+import software.amazon.awssdk.services.ses.SesClient
 
 import scala.jdk.CollectionConverters._
-import software.amazon.awssdk.services.ses.SesClient
 
 class Ses(config: SesConfig) {
   import Ses._
