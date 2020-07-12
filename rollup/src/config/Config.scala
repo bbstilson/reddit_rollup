@@ -15,7 +15,10 @@ case class RedditConfig(
   clientSecret: String
 )
 
+case class SesConfig(email: String)
+
 case class Config(
   reddit: RedditConfig,
-  database: DatabaseConfig
+  database: DatabaseConfig,
+  ses: SesConfig
 )

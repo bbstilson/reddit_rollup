@@ -15,10 +15,11 @@ I run it every hour on a [Raspberry Pi 4](https://www.raspberrypi.org/products/r
 After creating a [script app](https://github.com/reddit-archive/reddit/wiki/OAuth2-Quick-Start-Example#first-steps), one must export the following envvars:
 
 ```bash
-USERNAME # your reddit username
-PASSWORD # your reddit password
+REDDIT_USERNAME # your reddit username
+REDDIT_PASSWORD # your reddit password
 CLIENT_ID # your app client id
 CLIENT_SECRET # your app secret
+MY_EMAIL # your email
 ```
 
 Then:

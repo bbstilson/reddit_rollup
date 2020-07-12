@@ -1,5 +1,6 @@
 import db._
 import config._
+import ses._
 
 import cats.effect._
 import doobie.util.transactor.Transactor
@@ -24,8 +25,9 @@ object App extends IOApp {
   private def start(resources: Resources): IO[ExitCode] = {
     val dao = new Dao(resources.transactor)
     val reddit = new Reddit(resources.config.reddit)
+    val ses = new Ses(resources.config.ses)
     implicit val backend = resources.httpBackend
-    new Rollup(reddit, dao).run
+    new Rollup(reddit, dao, ses).run
   }
 
   private def buildResources: Resource[IO, Resources] = {

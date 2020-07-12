@@ -5,12 +5,10 @@ package reddit.model
 case class Post(
   id: String,
   subreddit: String,
-  // selftext: String,
   title: String,
   subreddit_name_prefixed: String,
   upvote_ratio: Float,
   score: Int,
-  // selftext_html: Option[String],
   thumbnail: String,
   permalink: String,
   url: String

@@ -1,19 +1,22 @@
 import db._
 import reddit._
+import reddit.model.Post
+import ses._
 
 import cats.effect._
 import sttp.client._
 
 import java.time.{ DayOfWeek, LocalDateTime }
 
-class Rollup(reddit: Reddit, dao: Dao) {
+class Rollup(reddit: Reddit, dao: Dao, ses: Ses) {
 
   def run(implicit backend: SttpBackend[IO, Nothing, NothingT]): IO[ExitCode] = {
     val shouldSendReport = {
       val now = LocalDateTime.now
-      val isSunday = DayOfWeek.from(now) == DayOfWeek.SUNDAY
+      // Just going to send a daily roll up for now.
+      val isSunday = DayOfWeek.from(now) == DayOfWeek.SUNDAY || true
       val is8am = now.getHour == 8
-      isSunday && is8am || true
+      isSunday && is8am
     }
 
     for {
@@ -26,12 +29,21 @@ class Rollup(reddit: Reddit, dao: Dao) {
 
   private def sendReport: IO[Unit] = {
     for {
-      // 1) read all the data out of the database
-      // 2) do the processing
-      // 3) send email
-      // 4) reset database
+      allPosts <- dao.getAllPosts
+      topPosts = getTopPostsFromEachSubreddit(allPosts)
+      response <- ses.sendRollup(topPosts)
+      _ <- IO(println(response))
       _ <- dao.recreate
       _ <- IO(println("recreated the database"))
     } yield ()
+  }
+
+  private def getTopPostsFromEachSubreddit(posts: List[Post]): Map[String, List[Post]] = {
+    posts
+      .groupBy(_.subreddit)
+      .map {
+        case (subreddit, posts) =>
+          subreddit -> posts.sortBy(p => (p.score, p.upvote_ratio)).reverse.take(3)
+      }
   }
 }
