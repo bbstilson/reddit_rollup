@@ -39,6 +39,16 @@ Then:
 mill rollup.run
 ```
 
+## Cron
+
+This was designed to be run every hour (or at least timed with the [`shouldSendReport`](https://github.com/bbstilson/reddit_rollup/blob/master/rollup/src/Rollup.scala#L14)). The way I've done this is with a cronjob.
+
+On my pi,
+
+```bash
+@hourly /home/ubuntu/reddit_rollup/cron/run.sh >> /var/log/reddit_rollup.log
+```
+
 ## Testing
 
 Testing is pretty light, but to run them:
