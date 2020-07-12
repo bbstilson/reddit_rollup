@@ -9,12 +9,11 @@ import java.time.{ DayOfWeek, LocalDateTime }
 class Rollup(reddit: Reddit, dao: Dao) {
 
   def run(implicit backend: SttpBackend[IO, Nothing, NothingT]): IO[ExitCode] = {
-    // Send a report every morning at roughly 8am.
     val shouldSendReport = {
       val now = LocalDateTime.now
       val isSunday = DayOfWeek.from(now) == DayOfWeek.SUNDAY
       val is8am = now.getHour == 8
-      isSunday && is8am
+      isSunday && is8am || true
     }
 
     for {

@@ -7,6 +7,7 @@ import reddit.model.Codecs._
 import cats.effect._
 import sttp.client._
 import sttp.client.circe._
+import io.circe.Error
 
 class Reddit(config: RedditConfig) {
 
@@ -16,11 +17,10 @@ class Reddit(config: RedditConfig) {
   )
 
   def getFrontPage(implicit backend: SttpBackend[IO, Nothing, NothingT]): IO[List[Post]] = {
-
     for {
       authToken <- getAuthToken
       resp <- authenticatedRequest(authToken).send().map(_.body)
-      posts <- resp.fold(IO.raiseError, page => IO(page.data.children.map(_.data)))
+      posts <- resp.map(_.data.children.map(_.data)).fold(httpErrorToIO, IO.pure)
     } yield posts
   }
 
@@ -57,7 +57,10 @@ class Reddit(config: RedditConfig) {
 
     for {
       resp <- request.send().map(_.body)
-      accessToken <- resp.fold(IO.raiseError, tokenResp => IO(tokenResp.access_token))
+      accessToken <- resp.map(_.access_token).fold(httpErrorToIO, IO.pure)
     } yield accessToken
   }
+
+  private def httpErrorToIO[A](e: ResponseError[Error]): IO[A] =
+    IO.raiseError(new Exception(e.body + "\n" + e.getMessage()))
 }
