@@ -6,7 +6,7 @@ I wanted to stop going on reddit, but I do actually find useful things on there 
 
 ## Solution
 
-This app takes a snapshot of my personal frontpage and saves the posts to a sqlite database. At the end of a week, it pulls all the posts from week, does some heuristics to choose the most "important" (again, memes) posts from each subreddit, then sends me an email.
+This app takes a snapshot of a logged-in frontpage and saves the posts to a sqlite database. At the end of a week, it pulls all the posts, does some heuristics to choose the most "important" (again, memes) posts from each subreddit, then sends an email.
 
 I run it every hour on a [Raspberry Pi 4](https://www.raspberrypi.org/products/raspberry-pi-4-model-b/) ubuntu server.
 
