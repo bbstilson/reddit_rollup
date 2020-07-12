@@ -1,4 +1,3 @@
-import config._
 import db._
 import reddit._
 
@@ -7,7 +6,7 @@ import sttp.client._
 
 import java.time.{ DayOfWeek, LocalDateTime }
 
-class Rollup(config: Config, dao: Dao) {
+class Rollup(reddit: Reddit, dao: Dao) {
 
   def run(implicit backend: SttpBackend[IO, Nothing, NothingT]): IO[ExitCode] = {
     // Send a report every morning at roughly 8am.
@@ -20,7 +19,7 @@ class Rollup(config: Config, dao: Dao) {
 
     for {
       _ <- if (shouldSendReport) sendReport else IO.unit
-      posts <- Reddit.getFrontPage(config.reddit)
+      posts <- reddit.getFrontPage
       n <- dao.upsertPosts(posts)
       _ <- IO(println(s"Upserted $n posts."))
     } yield ExitCode.Success

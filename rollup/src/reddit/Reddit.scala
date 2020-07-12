@@ -8,38 +8,32 @@ import cats.effect._
 import sttp.client._
 import sttp.client.circe._
 
-object Reddit {
+class Reddit(config: RedditConfig) {
 
-  def getFrontPage(
-    cfg: RedditConfig
-  )(implicit
-    backend: SttpBackend[IO, Nothing, NothingT]
-  ): IO[List[Post]] = {
-    val headers = Map(
-      "user-agent" -> s"rollup by ${cfg.username}",
-      "accept" -> "application/json"
-    )
+  private val headers = Map(
+    "user-agent" -> s"rollup by ${config.username}",
+    "accept" -> "application/json"
+  )
 
-    def request(authToken: String) = {
-      basicRequest
-        .get(uri"https://oauth.reddit.com/best")
-        .auth
-        .bearer(authToken)
-        .headers(headers)
-        .response(asJson[Page])
-    }
+  def getFrontPage(implicit backend: SttpBackend[IO, Nothing, NothingT]): IO[List[Post]] = {
 
     for {
-      authToken <- getAuthToken(cfg, headers)
-      resp <- request(authToken).send().map(_.body)
+      authToken <- getAuthToken
+      resp <- authenticatedRequest(authToken).send().map(_.body)
       posts <- resp.fold(IO.raiseError, page => IO(page.data.children.map(_.data)))
     } yield posts
-
   }
 
-  private def getAuthToken(cfg: RedditConfig, headers: Map[String, String])(implicit
-    backend: SttpBackend[IO, Nothing, NothingT]
-  ): IO[String] = {
+  private def authenticatedRequest(authToken: String) = {
+    basicRequest
+      .get(uri"https://oauth.reddit.com/best")
+      .auth
+      .bearer(authToken)
+      .headers(headers)
+      .response(asJson[Page])
+  }
+
+  private def getAuthToken(implicit backend: SttpBackend[IO, Nothing, NothingT]): IO[String] = {
 
     /**
       * 2FA was disabled because it doesn't work with this type of API access. Here's how to do it:
@@ -49,15 +43,15 @@ object Reddit {
       */
     val body = Map(
       "grant_type" -> "password",
-      "username" -> cfg.username,
-      "password" -> cfg.password
+      "username" -> config.username,
+      "password" -> config.password
     )
 
     val request = basicRequest
       .post(uri"https://www.reddit.com/api/v1/access_token")
       .body(body)
       .auth
-      .basic(cfg.clientId, cfg.clientSecret)
+      .basic(config.clientId, config.clientSecret)
       .headers(headers)
       .response(asJson[TokenResponse])
 

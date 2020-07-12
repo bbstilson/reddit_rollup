@@ -9,6 +9,7 @@ import pureconfig.generic.auto._
 import pureconfig.module.catseffect.syntax._
 import sttp.client._
 import sttp.client.asynchttpclient.cats.AsyncHttpClientCatsBackend
+import reddit.Reddit
 
 object App extends IOApp {
 
@@ -22,8 +23,9 @@ object App extends IOApp {
 
   private def start(resources: Resources): IO[ExitCode] = {
     val dao = new Dao(resources.transactor)
+    val reddit = new Reddit(resources.config.reddit)
     implicit val backend = resources.httpBackend
-    new Rollup(resources.config, dao).run
+    new Rollup(reddit, dao).run
   }
 
   private def buildResources: Resource[IO, Resources] = {
