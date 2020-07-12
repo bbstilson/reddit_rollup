@@ -15,7 +15,7 @@ class Rollup(config: Config, dao: Dao) {
       val now = LocalDateTime.now
       val isSunday = DayOfWeek.from(now) == DayOfWeek.SUNDAY
       val is8am = now.getHour == 8
-      isSunday && is8am || true
+      isSunday && is8am
     }
 
     for {
@@ -27,11 +27,10 @@ class Rollup(config: Config, dao: Dao) {
 
   private def sendReport: IO[Unit] = {
     for {
-      //   // 1) read all the data out of the database
-      // dao.getAllPosts.map(_.title) //.compile.toVector.unsafeRunSync().foreach(println)
-      //   // 2) do the processing
-      //   // 3) send email
-      //   // 4) reset database
+      // 1) read all the data out of the database
+      // 2) do the processing
+      // 3) send email
+      // 4) reset database
       _ <- dao.recreate
       _ <- IO(println("recreated the database"))
     } yield ()
