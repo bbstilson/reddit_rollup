@@ -27,6 +27,10 @@ REDDIT_PASSWORD # your reddit password
 CLIENT_ID # your app client id
 CLIENT_SECRET # your app secret
 MY_EMAIL # your email that you verified in SES.
+
+AWS_ACCESS_KEY_ID
+AWS_REGION
+AWS_SECRET_ACCESS_KEY
 ```
 
 Then:
