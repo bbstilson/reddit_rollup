@@ -21,7 +21,7 @@ class Rollup(config: Config, dao: Dao) {
     for {
       _ <- if (shouldSendReport) sendReport else IO.unit
       posts <- Reddit.getFrontPage(config.reddit)
-      _ <- dao.insertPosts(posts).compile.toVector
+      _ <- dao.insertPosts(posts).compile.drain
     } yield ExitCode.Success
   }
 
