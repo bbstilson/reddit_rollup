@@ -7,21 +7,17 @@ class DaoSpec extends DbUnitSpec {
     val p1 = Post(
       "id",
       "subreddit",
-      "selftext",
       "title",
       "subreddit_name_prefixed",
       0.5f,
       10,
-      Some("selftext_html"),
       "thumbnail",
       "permalink",
       "url"
     )
     val p2 = p1.copy(
       upvote_ratio = 0.9f,
-      score = 20,
-      selftext_html = Some("wee woo"),
-      selftext = "myselftext"
+      score = 20
     )
 
     dao.upsertPosts(List(p1)).unsafeRunSync // insert

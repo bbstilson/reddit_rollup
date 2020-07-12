@@ -16,12 +16,10 @@ class Dao(xa: Transactor[IO]) {
     CREATE TABLE posts (
       id TEXT PRIMARY KEY NOT NULL,
       subreddit TEXT NOT NULL,
-      selftext TEXT NOT NULL,
       title TEXT NOT NULL,
       subreddit_name_prefixed TEXT NOT NULL,
       upvote_ratio FLOAT NOT NULL,
       score INTEGER NOT NULL,
-      selftext_html TEXT NULL,
       thumbnail TEXT NOT NULL,
       permalink TEXT NOT NULL,
       url TEXT NULL
@@ -35,23 +33,19 @@ class Dao(xa: Transactor[IO]) {
     val query = """INSERT INTO posts (
       id,
       subreddit,
-      selftext,
       title,
       subreddit_name_prefixed,
       upvote_ratio,
       score,
-      selftext_html,
       thumbnail,
       permalink,
       url
     )
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     ON CONFLICT (id)
     DO UPDATE SET
-      selftext = excluded.selftext,
       upvote_ratio = excluded.upvote_ratio,
-      score = excluded.score,
-      selftext_html = excluded.selftext_html
+      score = excluded.score
     """
     Update[Post](query, None)
   }
