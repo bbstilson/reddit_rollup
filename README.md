@@ -17,7 +17,7 @@ If you have not done so already:
 1) Install [mill](http://www.lihaoyi.com/mill/#installation).
 2) Create a Reddit [script app](https://github.com/reddit-archive/reddit/wiki/OAuth2-Quick-Start-Example#first-steps).
 3) Verify your email on [SES](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/quick-start.html).
-4) Ensure you have sqlite3: `sqlite3 --version # 3.28.0`
+4) Ensure you have sqlite3: `sqlite3 --version`.
 
 Finally, export the following variables:
 
