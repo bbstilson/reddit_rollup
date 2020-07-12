@@ -21,7 +21,8 @@ class Rollup(config: Config, dao: Dao) {
     for {
       _ <- if (shouldSendReport) sendReport else IO.unit
       posts <- Reddit.getFrontPage(config.reddit)
-      _ <- dao.insertPosts(posts).compile.drain
+      n <- dao.upsertPosts(posts)
+      _ <- IO(println(s"Upserted $n posts."))
     } yield ExitCode.Success
   }
 

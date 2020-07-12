@@ -26,3 +26,9 @@ Then:
 ```bash
 mill rollup.run
 ```
+
+## Testing
+
+```bash
+mill rollup.test
+```

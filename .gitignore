@@ -4,5 +4,5 @@
 **/.metals/
 **/target/
 **/.ammonite/
-rollup.db
+*.db
 secrets.sh
