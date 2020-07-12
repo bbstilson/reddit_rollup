@@ -1,0 +1,8 @@
+**/out/
+**/.bloop/
+**/.vscode/
+**/.metals/
+**/target/
+**/.ammonite/
+rollup.db
+secrets.sh
