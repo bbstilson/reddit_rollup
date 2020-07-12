@@ -9,11 +9,11 @@ import doobie.implicits._
 
 class Dao(xa: Transactor[IO]) {
 
-  private lazy val truncate: ConnectionIO[Int] = sql"DROP TABLE IF EXISTS posts".update.run
+  private lazy val truncateQuery: ConnectionIO[Int] = sql"DROP TABLE IF EXISTS posts".update.run
 
-  private lazy val create: ConnectionIO[Int] = {
+  private lazy val createIfNotExistsQuery: ConnectionIO[Int] = {
     sql"""
-    CREATE TABLE posts (
+    CREATE TABLE IF NOT EXISTS posts (
       id TEXT PRIMARY KEY NOT NULL,
       subreddit TEXT NOT NULL,
       title TEXT NOT NULL,
@@ -27,7 +27,9 @@ class Dao(xa: Transactor[IO]) {
     """.update.run
   }
 
-  def recreate: IO[Int] = (truncate, create).mapN(_ + _).transact(xa)
+  def recreate: IO[Int] = (truncateQuery, createIfNotExistsQuery).mapN(_ + _).transact(xa)
+
+  def createIfNotExists: IO[Int] = createIfNotExistsQuery.transact(xa)
 
   private val upsertPostQuery: Update[Post] = {
     val query = """INSERT INTO posts (

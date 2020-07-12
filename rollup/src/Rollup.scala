@@ -20,6 +20,7 @@ class Rollup(reddit: Reddit, dao: Dao, ses: Ses) {
     }
 
     for {
+      _ <- dao.createIfNotExists
       _ <- if (shouldSendReport) sendReport else IO.unit
       posts <- reddit.getFrontPage
       n <- dao.upsertPosts(posts)
